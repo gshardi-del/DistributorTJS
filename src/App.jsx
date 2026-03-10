@@ -93,7 +93,7 @@ async function askClaude(q, history, data) {
   const topS=[...data.sales].sort((a,b)=>b.nett-a.nett).slice(0,5).map(s=>`${s.name}(${s.area}): ${fmtRp(s.nett)}, ${s.visits} visits, ${s.orderRate}% order rate`).join("\n");
   const attn=data.sales.filter(s=>["warning","danger"].includes(s.status)).slice(0,8).map(s=>`${s.name}: ${fmtRp(s.nett)}, ${s.visits} visits, ${s.orderRate}% order rate`).join("\n");
   const sys=`Kamu AI assistant untuk manager CV Trio Jaya Sentosa, distributor rokok Jawa Tengah. Periode: ${data.period}. ${data.sales.length} sales.\nTOP 5:\n${topS}\nPERLU PERHATIAN:\n${attn}\nPRODUK: ${data.products.slice(0,5).map(p=>`${p.name}(${p.value}%)`).join(", ")}\nJawab singkat bahasa Indonesia casual-profesional. Emoji sesekali. Maks 5 kalimat. Berikan rekomendasi actionable.`;
-  const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system:sys,messages:[...history,{role:"user",content:q}]})});
+  const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system:sys,messages:[...history,{role:"user",content:q}]})});
   const d=await res.json();
   return d.content?.[0]?.text||"Maaf ada gangguan. Coba lagi.";
 }
